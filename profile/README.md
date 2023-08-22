@@ -40,7 +40,7 @@ Orbital integrates on-the-fly, automatically adjusting as your data sources chan
 
 This is powered [Taxi](https://github.com/taxilang/taxilang) which adds rich [Semantic Metadata](https://orbitalhq.com/blog/2023-05-22-semantic-metadata-101) to your exist API specs, that describes how data relates between your data sources.
 
-![Network Diagram](./network-diagram.png)
+![Network Diagram](./profile/network-diagram.png)
 
 ## Taxi
 Under the hood, Orbital is a [TaxiQL](https://docs.taxilang.org/language-reference/querying-with-taxiql/) query server.
