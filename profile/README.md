@@ -42,6 +42,85 @@ This is powered [Taxi](https://github.com/taxilang/taxilang) which adds rich [Se
 
 ![Network Diagram](./profile/network-diagram.png)
 
+## Orbital Fly-by
+Here's the main ideas of Orbital.
+
+0. **Define some shared terms**
+
+Create a [Taxi project](https://taxilang.org/taxi-cli/intro/):
+
+```bash
+taxi init
+```
+
+... and create some types...
+
+```taxi
+type MovieId inherits Int
+type MovieTitle inherits String
+// ... etc...
+```
+
+
+1. **Add metadata into your APIs**
+   
+```diff
+# An extract of an OpenAPI spec:
+components:
+  schemas:
+    Reviews:
+      properties:
+        id:
+          type: string
++           # Embed semantic type metadata directly in OpenAPI
++           x-taxi-type:
++             name: MovieId
+
+```   
+
+(See the full docs for [OpenAPI](https://orbitalhq.com/docs/describing-data-sources/open-api), or other examples in [Protobuf](https://orbitalhq.com/docs/describing-data-sources/protobuf) and [Databases](https://orbitalhq.com/docs/describing-data-sources/databases))
+
+2. **Publish your API specs to Orbital**
+
+Tell Orbital about your API.  There's a few ways to do this.
+
+ * [Get Orbital to poll your OpenAPI spec](https://orbitalhq.com/docs/describing-data-sources/open-api#publishing-open-api-specs-to-orbital)
+ * [Read from a Git repository](https://orbitalhq.com/docs/connecting-data-sources/connecting-a-git-repo)
+ * [Get your app to push directly to Orbital](https://orbitalhq.com/docs/connecting-data-sources/overview#pushing-updates-on-startup)
+
+3. **Query for data**
+
+Some example queries:
+```taxi
+// Find all the movies
+find { Movie[] }
+
+// Find a specific movie
+find { Movie(MovieId == 1)}
+
+// Join some other data
+find { Movie[] } as {
+    title: MovieTitle
+
+    // Compose together APIs:
+    // Where can I watch this?
+    // This data comes from another REST API
+    streamingServiceName: ServiceName
+    price: PricePerMonth
+
+    // Reviews - is the film any good?
+    // This data comes from a third API
+    reviewScore: ReviewScore
+    reviewText: ReviewText
+}
+```
+
+Orbital builds the integration for each query, and composes the APIs on demand.
+
+Because it's powered by API specs:
+ * There's no resolvers to maintain
+ * Changes to API specs are automatically main
+
 ## Taxi
 Under the hood, Orbital is a [TaxiQL](https://docs.taxilang.org/language-reference/querying-with-taxiql/) query server.
 
